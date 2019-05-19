@@ -1,0 +1,55 @@
+@startuml
+' use strict UML mode
+skinparam style strictuml
+
+actor "User" as user
+
+participant "Application" as main <<main>>
+main++
+
+create "ProductDAO" as dao <<DAO>>
+main -> dao : construct
+
+create "MainMenu" as menu <<frame>>
+main -> menu : construct(dao)
+
+main -> menu++ : setVisible(true)
+
+user -> menu++ : click 'view all products'
+
+create "ProductReport" as report <<dialog>>
+menu -> report : construct(dao)
+
+report++
+
+report -> dao++ : getProducts()
+return products
+
+create "SimpleListModel" as model <<model>>
+report -> model : construct
+
+report -> model++ : updateItems(products)
+model--
+report -> report : productsList.setModel(model)
+
+menu -> report : setVisible(true)
+
+user -> report++: click 'delete'
+
+report -> report : getSelectedValue(product)
+
+create "ConfirmDialog" as confirm <<dialog>>
+report -> confirm++ : construct
+
+user -> confirm : click 'yes'
+confirm--
+
+report -> dao++ : deleteProduct(product)
+dao--
+
+report -> model++ : updateItems(products)
+model--
+
+report -> report : productsList.setModel(model)
+report -> user : products are visible to user
+@enduml

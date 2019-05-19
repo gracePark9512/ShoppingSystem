@@ -1,0 +1,44 @@
+@startuml
+' use strict UML mode
+skinparam style strictuml
+
+actor "User" as user
+
+participant "Application" as main <<main>>
+main++
+
+create "MainMenu" as menu <<frame>>
+main -> menu : construct
+main -> menu++ : setVisible(true)
+
+user -> menu++ : click 'view all products'
+
+create "ProductViewer" as viewer <<dialog>>
+menu -> viewer : create
+
+viewer++
+
+create "SimpleListModel" as model <<model>>
+viewer -> model : construct
+create "ProductDAO" as dao <<DAO>>
+viewer -> dao : construct
+
+viewer -> dao : getProducts() : products
+dao -> model : products
+
+model -> viewer : updateItems(products)
+
+viewer--
+
+menu -> viewer++ : setVisible(true)
+
+user -> viewer++ : clicks close button
+viewer -> viewer– : dispose()
+
+return
+
+destroy viewer
+
+menu -> user : ready for next operation
+
+@enduml

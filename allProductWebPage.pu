@@ -1,0 +1,33 @@
+@startuml
+' use strict UML mode
+skinparam style strictuml
+
+actor "Customer" as customer
+
+participant "Products Page" as page <<Page>>
+customer -> page++: opens products page
+
+participant "Product Controller" as controller <<Angular JS>>
+page -> controller++: query()
+
+participant "Jooby Web Service" as jooby <<Web Server>>
+controller -> jooby++ : JSON
+
+participant "ProductDAO" as dao <<DAO>>
+jooby -> dao++: getProducts()
+participant "DB" as db
+dao -> db++ : query
+db --> dao : result
+db--
+dao --> jooby: products
+dao--
+jooby --> controller : JSON
+jooby--
+controller --> page : products
+controller--
+
+page -> page: update page
+
+page -> customer : products are visible to user
+
+@enduml

@@ -1,0 +1,51 @@
+@startuml
+' use strict UML mode
+skinparam style strictuml
+
+actor "User" as user
+
+participant "Application" as main <<main>>
+main++
+
+create "MainMenu" as menu <<frame>>
+main -> menu : construct
+main -> menu++ : setVisible(true)
+
+user -> menu++ : click 'add new product'
+
+create "ProductEditor" as editor <<dialog>>
+menu -> editor : create
+
+editor++
+
+create "ProductDAO" as dao <<DAO>>
+editor -> dao : construct
+editor--
+
+menu -> editor++ : setVisible(true)
+
+user -> editor++: enters product details
+
+editor--
+
+user -> editor++ : clicks save button
+
+create "Product : product" as product <<domain>>
+editor -> product : construct
+editor -> editor : getText() : productID
+
+editor -> product++ : setProductID(productID)
+product--
+
+editor -> dao++ : save(product)
+dao–-
+
+editor -> editor– : dispose()
+
+return
+
+destroy editor
+
+menu -> user : ready for next operation
+
+@enduml
